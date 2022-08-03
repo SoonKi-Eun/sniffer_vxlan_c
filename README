@@ -1,3 +1,17 @@
 -> Main Ref ) https://github.com/troglobit/sniffer/blob/master/sniffer.c
+              https://github.com/the-tcpdump-group/tcpdump/blob/master/print-vxlan.c
+              
+$ cd sniffer_vxlan_c/src
+$ gcc -o sniffer_vxlan sniffer_vxlan.c
+$ sudo ./sniffer_vxlan
+$ Starting...
+TCP : 2   UDP : 5   ICMP : 0   IGMP : 0   VXLAN(udp - 4789) : 0   Others : 5   Total : 11
 
+VXLAN 은 pcap tcpreplay를 통해 간단히 테스트 가능 아래는 예제 명령어
 
+원본 pcap 변환(dst 변경)
+tcpprep -a client -i $origin_pcap_file -o ./input.cache
+$tcpreplay_path/src/tcprewrite -i $origin_pcap_file -o $target_pcap_file --enet-smac=$src_mac --enet-dmac=$dst_mac -e $src_ip:$dst_ip -r $orgin_dst_port:$new_dst_port -c ./input.cache -C
+
+대상 pcap replay
+tcpreplay -l 0 -i eth0 $target_pcap_file
